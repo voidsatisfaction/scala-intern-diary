@@ -1,4 +1,4 @@
-package interndiary.application
+package interndiary.service
 
 import interndiary.helper._
 import org.joda.time.LocalDateTime
