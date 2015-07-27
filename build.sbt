@@ -37,8 +37,7 @@ lazy val interndiary = (project in file(".")).
       "-deprecation",
       "-feature"
     ),
-    initialCommands := "import interndiary._",
-    TwirlKeys.templateImports += "interndiary.model._"
+    // TwirlKeys.templateImports += "interndiary.model._" // モデルを定義したらコメントアウト
+    initialCommands := "import interndiary._"
   ).
   enablePlugins(SbtTwirl)
-
