@@ -13,6 +13,7 @@ lazy val interndiary = (project in file(".")).
     libraryDependencies ++= Seq(
       "joda-time" % "joda-time" % "2.7",
       "org.joda" % "joda-convert" % "1.7",
+      "net.databinder.dispatch" %% "dispatch-core" % "0.11.3",
       "com.typesafe.slick" % "slick_2.11" % "3.0.0",
       "com.github.tarao" %% "slick-jdbc-extension" % "0.0.2",
       "com.github.tototoshi" %% "slick-joda-mapper" % "2.0.0",
