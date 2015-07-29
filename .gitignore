@@ -1,17 +1,24 @@
-*.class
-*.log
+gnore all dotfiles...
+.*
+# except for .gitignore
+!.gitignore
+!.travis.yml
+!.coveralls.yml
 
-# sbt specific
-.cache
-.history
-.lib/
-dist/*
+# Ignore Play! working directory #
+db
+eclipse
+lib
+log
+logs
+modules
+precompiled
+project/project
+project/target
+target
+tmp
+test-result
+server.pid
+*.iml
+*.eml
 target/
-lib_managed/
-src_managed/
-project/boot/
-project/plugins/project/
-
-.idea/
-/data
-/data-test
