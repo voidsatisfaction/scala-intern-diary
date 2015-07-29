@@ -5,8 +5,8 @@ import sbt._
 
 import scalariform.formatter.preferences._
 
-object hatenaInternExerciseBuild extends Build {
-  val appName = "hatena-intern-exercise"
+object BasicDiaryBuild extends Build {
+  val appName = "basic-diary"
   val appVersion  = "0.0.1"
   val appScalaVersion = "2.11.6"
 
@@ -25,6 +25,15 @@ object hatenaInternExerciseBuild extends Build {
         ),
       resolvers ++= Seq(
         "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
+      ),
+      scalacOptions ++= Seq(
+        "-Xlint",
+        "-Ywarn-unused",
+        "-Ywarn-unused-import",
+        "-unchecked", "-deprecation", "-feature",
+        "-language:postfixOps",
+        "-language:reflectiveCalls",
+        "-encoding", "utf8"
       ),
       fork in Test := true,
       scalacOptions in Test ++= Seq("-Yrangepos")
