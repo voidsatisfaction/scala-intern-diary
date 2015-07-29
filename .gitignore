@@ -1,9 +1,10 @@
-gnore all dotfiles...
+#gnore all dotfiles...
 .*
 # except for .gitignore
 !.gitignore
 !.travis.yml
 !.coveralls.yml
+!.gitkeep
 
 # Ignore Play! working directory #
 db
