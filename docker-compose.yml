@@ -1,0 +1,23 @@
+version: '3'
+services:
+  # web:
+  #   build: .
+  #   volumes:
+  #     - .:/usr/src/perl-Intern-Diary
+  #   depends_on:
+  #     - db
+  #   environment:
+  #     - INTERN_DIARY_ENV=DEV
+  #   ports:
+  #     - "13000:3000"
+  db:
+    image: "mysql:5.7.20"
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_DATABASE=intern_diary
+      - MYSQL_USER=nobody
+      - MYSQL_PASSWORD=nobody
+    ports:
+      - "13306:3306"
