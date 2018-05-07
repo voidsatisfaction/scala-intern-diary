@@ -52,5 +52,10 @@ object Articles {
     rows
   }
 
-  // def deleteByDiaryAndTitle(diary: Diary, title: String)(implicit ctx: Context):
+  def delete(articleId: Long)(implicit ctx: Context): Unit = {
+    val _: Int = run(sqlu"""
+      DELETE FROM article
+        WHERE article_id=$articleId
+    """)
+  }
 }
