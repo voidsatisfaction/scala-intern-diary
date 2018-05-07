@@ -35,4 +35,14 @@ object Diaries {
         title = $title
     """.as[Diary].map(_.headOption))
   }
+
+  def listAll(user: User)(implicit ctx: Context): Seq[Diary] = {
+    val userId: Long = user.userId
+    val rows = run(sql"""
+      SELECT * FROM diary
+        WHERE
+          user_id = $userId
+    """.as[Diary])
+    rows
+  }
 }

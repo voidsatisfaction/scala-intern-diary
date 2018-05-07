@@ -29,5 +29,21 @@ class DiaryRepositorySpec extends UnitSpec with SetupDB with Factory {
         foundedDiary.userId shouldBe diary.userId
       }
     }
+
+    describe("listAll") {
+      it("should list all of diaries") {
+        val user = dummyUser
+        val diary1 = dummyDiary(user)
+        val diary2 = dummyDiary(user)
+        val diary3 = dummyDiary(user)
+        val diaryIds = List(diary1, diary2, diary3).map(_.diaryId)
+
+        val listedDiaries = Diaries.listAll(user)
+        val listedDiaryIds = listedDiaries.map(_.diaryId)
+
+        listedDiaryIds.length shouldBe 3
+        listedDiaryIds shouldBe diaryIds
+      }
+    }
   }
 }
