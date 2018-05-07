@@ -52,10 +52,10 @@ object Articles {
     rows
   }
 
-  def delete(articleId: Long)(implicit ctx: Context): Unit = {
+  def delete(title: String)(implicit ctx: Context): Unit = {
     val _: Int = run(sqlu"""
       DELETE FROM article
-        WHERE article_id=$articleId
+        WHERE title=$title
     """)
   }
 }
