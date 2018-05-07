@@ -44,5 +44,22 @@ class ArticleRepositorySpec extends UnitSpec with SetupDB with Factory {
         foundArticle shouldBe null
       }
     }
+
+    describe("listAll") {
+      it("should list all of articles") {
+        val user = dummyUser
+        val diary = dummyDiary(user)
+        val article1 = dummyArticle(diary)
+        val article2 = dummyArticle(diary)
+        val article3 = dummyArticle(diary)
+        val articleIds = List(article1, article2, article3).map(_.articleId)
+
+        val listedArticles = Articles.listAll(diary)
+        val listedArticleIds = listedArticles.map(_.articleId)
+
+        listedArticles.length shouldBe 3
+        articleIds shouldBe listedArticleIds
+      }
+    }
   }
 }

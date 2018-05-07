@@ -41,4 +41,16 @@ object Articles {
           title=$title
     """.as[Article].map(_.headOption))
   }
+
+  def listAll(diary: Diary)(implicit ctx: Context): Seq[Article] = {
+    val diaryId: Long = diary.diaryId
+    val rows = run(sql"""
+      SELECT * FROM article
+        WHERE
+          diary_id=$diaryId
+    """.as[Article])
+    rows
+  }
+
+  // def deleteByDiaryAndTitle(diary: Diary, title: String)(implicit ctx: Context):
 }
