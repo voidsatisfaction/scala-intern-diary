@@ -6,6 +6,7 @@ case class Article(
   articleId: Long,
   title: String,
   body: String,
+  diaryId: Long,
   created: LocalDateTime,
   updated: LocalDateTime
 )

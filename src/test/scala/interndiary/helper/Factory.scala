@@ -15,4 +15,8 @@ trait Factory {
   def dummyDiary(user: User)(implicit ctx: Context): Diary = {
     Diaries.create(user, randomString(25))
   }
+
+  def dummyArticle(diary: Diary)(implicit ctx: Context): Article = {
+    Articles.create(diary, randomString(20), randomString(150))
+  }
 }
