@@ -31,4 +31,8 @@ object Users {
     LIMIT 1
     """.as[User].map(_.headOption))
   }
+
+  def findOrCreateByName(name: String)(implicit ctx: Context): User = {
+    findByName(name).getOrElse(create(name))
+  }
 }
