@@ -14,13 +14,12 @@ object DiaryCLI {
 
   def run(args: Array[String]): Int = {
     try {
-      whiteSpace
+      printWhiteSpace
 
       Context.setup("db.default")
       implicit val ctx = Context.createContext()
       args.toList match {
         case userName :: "addDiary" :: diaryTitle :: _ =>
-          // QUESTION: appを外に出したいが、綺麗にできる方法？
           val app = createApp(userName)
           addDiary(app, diaryTitle)
         case userName:: "listDiary" :: _ =>
@@ -121,7 +120,7 @@ object DiaryCLI {
     1
   }
 
-  private def whiteSpace(): Unit = {
+  private def printWhiteSpace(): Unit = {
     println("\n\n")
   }
 
