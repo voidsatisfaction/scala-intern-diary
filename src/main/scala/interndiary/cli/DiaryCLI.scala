@@ -32,6 +32,9 @@ object DiaryCLI {
         case userName :: "listArticle" :: diaryTitle :: _ =>
           val app = createApp(userName)
           listArticle(app, diaryTitle)
+        case userName :: "deleteArticle" :: diaryTitle :: articleTitle :: _ =>
+          val app = createApp(userName)
+          deleteArticle(app, diaryTitle, articleTitle)
         case _ =>
           help()
       }
@@ -90,6 +93,21 @@ object DiaryCLI {
     }
   }
 
+  def deleteArticle(
+    app: DiaryApp,
+    diaryTitle: String,
+    articleTitle: String
+  )(implicit ctx: Context): Int = {
+    app.deleteArticle(diaryTitle, articleTitle) match {
+      case Right(_) =>
+        println(s"article $articleTitle has been deleted")
+        0
+      case Left(error) =>
+        process.stderr.println(error.toString())
+        1
+    }
+  }
+
   def help(): Int = {
     process.stderr.println(
       """
@@ -98,6 +116,7 @@ object DiaryCLI {
         |   run {username} listDiary
         |   run {username} addArticle {diaryTitle} {title} {body}
         |   run {username} listArticle {diaryTitle}
+        |   run {username} deleteArticle {diaryTitle} {articleTitle}
       """.stripMargin)
     1
   }

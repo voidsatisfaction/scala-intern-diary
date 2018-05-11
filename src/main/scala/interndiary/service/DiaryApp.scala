@@ -49,4 +49,13 @@ class DiaryApp(currentUserName: String) {
       case None => Left(DiaryNotFoundError)
     }
   }
+
+  def deleteArticle(diaryTitle: String, title: String)(implicit ctx: Context): Either[Error, Unit] = {
+    val user = currentUser
+
+    for {
+      diary <- repository.Diaries.findByUserAndTitle(user, diaryTitle).toRight(DiaryNotFoundError).right
+      article <- repository.Articles.findByDiaryAndTitle(diary, title).toRight(ArticleNotFoundError).right
+    } yield repository.Articles.delete(article)
+  }
 }

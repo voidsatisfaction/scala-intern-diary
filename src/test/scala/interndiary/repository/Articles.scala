@@ -63,12 +63,12 @@ class ArticleRepositorySpec extends UnitSpec with SetupDB with Factory {
     }
 
     describe("delete") {
-      it("should delete article with articleId") {
+      it("should delete article") {
         val user = dummyUser
         val diary = dummyDiary(user)
         val article = dummyArticle(diary)
 
-        Articles.delete(article.title)
+        Articles.delete(article)
 
         val foundArticle = Articles.findByDiaryAndTitle(diary, article.title).getOrElse(null)
 
