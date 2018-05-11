@@ -13,7 +13,7 @@ class DiaryApp(currentUserName: String) {
     // QUESTION: どうすれば綺麗にできるのか？
     repository.Diaries.findByUserAndTitle(user, title) match {
       case None => Right(repository.Diaries.create(user, title))
-      case _ => Left(DiaryAlreadyExists)
+      case _ => Left(DiaryAlreadyExistsError)
     }
   }
 
@@ -28,13 +28,13 @@ class DiaryApp(currentUserName: String) {
 
     // QUESTION 以下ができる綺麗なコードは？
     // すでに作成された同じダイアリーの同じタイトルの記事があるか確認
-    // ある場合、ArticleAlreadyExistsエラーを返す
+    // ある場合、ArticleAlreadyExistsErrorエラーを返す
     // なかったら、記事を作成
     repository.Diaries.findByUserAndTitle(user, diaryTitle) match {
       case Some(diary) =>
         repository.Articles.findByDiaryAndTitle(diary, title) match {
           case None => Right(repository.Articles.create(diary, title, body))
-          case _ => Left(ArticleAlreadyExists)
+          case _ => Left(ArticleAlreadyExistsError)
         }
       case None => Left(DiaryNotFoundError)
     }
