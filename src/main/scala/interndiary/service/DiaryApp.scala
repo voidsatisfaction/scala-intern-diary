@@ -8,12 +8,11 @@ class DiaryApp(currentUserName: String) {
     repository.Users.findOrCreateByName(currentUserName)
   }
 
-  def addDiary(title: String)(implicit ctx: Context): Either[Error, Diary] = {
+  def addDiary(title: String)(implicit ctx: Context): Either[DiaryError, Diary] = {
     val user = currentUser
-    // QUESTION: どうすれば綺麗にできるのか？
     repository.Diaries.findByUserAndTitle(user, title) match {
       case None => Right(repository.Diaries.create(user, title))
-      case _ => Left(DiaryAlreadyExistsError)
+      case _ => Left(DiaryAlreadyExists)
     }
   }
 
@@ -26,17 +25,13 @@ class DiaryApp(currentUserName: String) {
   def addArticle(diaryTitle: String, title: String, body: String)(implicit ctx: Context): Either[Error, Article] = {
     val user = currentUser
 
-    // QUESTION 以下ができる綺麗なコードは？
-    // すでに作成された同じダイアリーの同じタイトルの記事があるか確認
-    // ある場合、ArticleAlreadyExistsErrorエラーを返す
-    // なかったら、記事を作成
     repository.Diaries.findByUserAndTitle(user, diaryTitle) match {
       case Some(diary) =>
         repository.Articles.findByDiaryAndTitle(diary, title) match {
           case None => Right(repository.Articles.create(diary, title, body))
-          case _ => Left(ArticleAlreadyExistsError)
+          case _ => Left(ArticleAlreadyExists)
         }
-      case None => Left(DiaryNotFoundError)
+      case None => Left(DiaryNotFound)
     }
   }
 
@@ -46,7 +41,7 @@ class DiaryApp(currentUserName: String) {
     repository.Diaries.findByUserAndTitle(user, diaryTitle) match {
       case Some(diary) =>
         Right(repository.Articles.listAll(diary).toList)
-      case None => Left(DiaryNotFoundError)
+      case None => Left(DiaryNotFound)
     }
   }
 
@@ -54,8 +49,8 @@ class DiaryApp(currentUserName: String) {
     val user = currentUser
 
     for {
-      diary <- repository.Diaries.findByUserAndTitle(user, diaryTitle).toRight(DiaryNotFoundError).right
-      article <- repository.Articles.findByDiaryAndTitle(diary, title).toRight(ArticleNotFoundError).right
+      diary <- repository.Diaries.findByUserAndTitle(user, diaryTitle).toRight(DiaryNotFound).right
+      article <- repository.Articles.findByDiaryAndTitle(diary, title).toRight(ArticleNotFound).right
     } yield repository.Articles.delete(article)
   }
 }

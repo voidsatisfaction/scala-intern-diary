@@ -10,16 +10,16 @@ import com.github.tototoshi.slick.MySQLJodaSupport._
 object Users {
   private implicit val getUserRowResult = GetResult(r => User(r.<<, r.<<, r.<<))
   def create(name: String)(implicit ctx: Context): User = {
-    /* QUESTION: なんで、|　が使えないでしょうか。使ったらエラー */
     val userId: Long = Identifier.generate
     val user = User(userId, name, new LocalDateTime())
     run(sqlu"""
     INSERT INTO user (user_id, name, created)
-    VALUES (
-      ${user.userId},
-      ${user.name},
-      ${user.created}
-    )
+      VALUES (
+        ${user.userId},
+        ${user.name},
+        ${user.created}
+      )
+      ON DUPLICATE KEY UPDATE created = created
     """)
     user
   }

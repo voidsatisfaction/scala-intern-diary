@@ -1,7 +1,6 @@
 package interndiary.repository
 
 import interndiary.model.{Diary, Article}
-// QUESTION: それぞれのパッケージの役割？
 import scala.concurrent.ExecutionContext.Implicits.global
 import org.joda.time.LocalDateTime
 import slick.driver.MySQLDriver.api._
@@ -14,7 +13,6 @@ object Articles {
     val id: Long = Identifier.generate
     val article = Article(id, title, body, diary.diaryId, new LocalDateTime(), new LocalDateTime())
 
-    // QUESTION: このrun関数はどこからきたものなのか？
     run(sqlu"""
       INSERT INTO article
         (article_id, title, body, diary_id, created, updated)
