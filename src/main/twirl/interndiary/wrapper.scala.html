@@ -1,4 +1,4 @@
-@(title: String)(content: Html)
+@(title: String)(content: Html)(implicit userLoggedIn: Boolean)
 <!DOCTYPE html>
 <html>
   <head>
@@ -7,6 +7,19 @@
   </head>
   <body>
     <h1>@title</h1>
+    <div class="nav">
+      @if(userLoggedIn){
+        <p>
+          <a href="#">logout</a>
+          <a href="/users/userName">my diary</a>
+        </p>
+      } else {
+        <p>
+          <a href="/login">login</a>
+        </p>
+      }
+    </div>
+
     <div id="content">
       @content
     </div>

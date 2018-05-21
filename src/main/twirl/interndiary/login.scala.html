@@ -1,0 +1,8 @@
+@()(implicit userLoggedIn: Boolean)
+@wrapper("Login page") {
+  <p>This is login page</p>
+  <form action="/login" method="post">
+    <input type="text" name="user_name" placeholder="input user name">
+    <input type="submit" value="login">
+  </form>
+}
