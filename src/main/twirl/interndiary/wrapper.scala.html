@@ -6,23 +6,24 @@
     <!-- <link rel="stylesheet" type="text/css" href="/stylesheets/default.css"> -->
   </head>
   <body>
-    <h1>@title</h1>
-    <div class="nav">
-      @if(userLoggedIn){
-        <p>
-          <a href="#">logout</a>
-          <a href="/users/userName">my diary</a>
-        </p>
-      } else {
-        <p>
-          <a href="/login">login</a>
-        </p>
-      }
-    </div>
-
     <div id="content">
+      <h1>@title</h1>
+      <div class="nav">
+        @if(userLoggedIn){
+          <p>
+            <a class="logout">logout</a>
+            <a href="/users/userName">my diary</a>
+          </p>
+        } else {
+          <p>
+            <a href="/login">login</a>
+          </p>
+        }
+      </div>
+
       @content
+
     </div>
-    <!-- <script src="/javascripts/main.js"></script> -->
+    <script src="/javascripts/main.js"></script>
   </body>
 </html>
