@@ -53,7 +53,7 @@ object DiaryCLI {
 
   def listDiary(app: DiaryApp)(implicit ctx: Context): Int = {
     println(s"--- ${app.currentUser.name}'s Diary ---")
-    app.listDiary().zipWithIndex.foreach { case(diary, i:Int) =>
+    app.listDiary(app.currentUser).zipWithIndex.foreach { case(diary, i:Int) =>
       println(s"$i: ${diary.title}")
     }
     0

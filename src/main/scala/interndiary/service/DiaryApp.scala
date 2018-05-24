@@ -8,6 +8,13 @@ class DiaryApp(currentUserName: String) {
     repository.Users.findOrCreateByName(currentUserName)
   }
 
+  def findUser(userName: String)(implicit ctx: Context): Either[UserError, User] = {
+    repository.Users.findByName(userName) match {
+      case Some(user) => Right(user)
+      case None => Left(UserNotFound)
+    }
+  }
+
   def addDiary(title: String)(implicit ctx: Context): Either[DiaryError, Diary] = {
     val user = currentUser
     repository.Diaries.findByUserAndTitle(user, title) match {
@@ -16,9 +23,7 @@ class DiaryApp(currentUserName: String) {
     }
   }
 
-  def listDiary()(implicit ctx: Context): List[Diary] = {
-    val user = currentUser
-
+  def listDiary(user: User)(implicit ctx: Context): List[Diary] = {
     repository.Diaries.listAll(user).toList
   }
 
