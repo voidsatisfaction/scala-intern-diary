@@ -3,9 +3,9 @@ package interndiary.web
 import interndiary.service.DiaryApp
 import org.scalatra._
 
-class DiaryWeb extends DiaryWebStack {
-  def createApp(): DiaryApp = {
-    new DiaryApp("hello")
+class DiaryWeb extends DiaryWebStack with AppContextSupport {
+  def createApp(userName: String): DiaryApp = {
+    new DiaryApp(userName)
   }
 
   def getUser(): Option[String] = {
@@ -32,7 +32,6 @@ class DiaryWeb extends DiaryWebStack {
     // QUSTION: 同じロジックが重複している(userLoggedIn)どうしたら、より綺麗にまとめられるのか？
     implicit val userLoggedIn: Boolean = isLoggedIn
     println(request.cookies)
-    val app = createApp()
     interndiary.html.index("Write your best diary, please!")
   }
 
@@ -51,11 +50,25 @@ class DiaryWeb extends DiaryWebStack {
 
   post("/logout") {
     response.setHeader(
-      "Set-Cookie", s"""userName=deleted; Path=/; Domain=localhost; Expires=Thu, 01 Jan 2020 00:00:00 GMT"""
+      "Set-Cookie", s"""userName=; Path=/; Domain=localhost; Expires=Thu, 01 Jan 2000 00:00:00 GMT"""
     )
     // response.setHeader(
     //   "Set-Cookie", s"""userName=deleted; Path=/; Domain=localhost"""
     // )
     redirect("/")
+  }
+
+  get("/users/:userName/diaries") {
+    implicit val userLoggedIn: Boolean = isLoggedIn
+    val userName: String = params("userName")
+    val app = createApp(userName)
+
+    (for {
+      user <- app.findUser(userName).right
+      diaries <- Right(app.listDiary(user)).right
+    } yield (user, diaries)) match {
+      case Right(result) => interndiary.html.myDiary(result._1, result._2)
+      case Left(errorResult) => errorResult
+    }
   }
 }
