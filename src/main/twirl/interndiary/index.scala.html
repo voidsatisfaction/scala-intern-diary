@@ -1,4 +1,7 @@
-@(msg: String)(implicit userLoggedIn: Boolean)
+@(msg: String)(
+  implicit userLoggedIn: Boolean,
+  currentUserName: String
+)
 @wrapper("Intern Diary") {
   <p>@msg</p>
 }

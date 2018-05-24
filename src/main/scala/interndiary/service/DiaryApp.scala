@@ -8,6 +8,10 @@ class DiaryApp(currentUserName: String) {
     repository.Users.findOrCreateByName(currentUserName)
   }
 
+  def findOrAddUser(userName: String)(implicit ctx: Context): User = {
+    repository.Users.findOrCreateByName(userName)
+  }
+
   def findUser(userName: String)(implicit ctx: Context): Either[UserError, User] = {
     repository.Users.findByName(userName) match {
       case Some(user) => Right(user)
