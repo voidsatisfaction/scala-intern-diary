@@ -1,0 +1,10 @@
+@()(
+  implicit userLoggedIn: Boolean,
+  currentUserName: String
+)
+@wrapper("diary add page") {
+  <form action="/diaries" method="post">
+    <input type="text" name="diary_title" placeholder="diary's title">
+    <input type="submit" value="submit">
+  </form>
+}

@@ -79,7 +79,7 @@ object DiaryCLI {
     app: DiaryApp,
     diaryTitle: String
   )(implicit ctx: Context): Int = {
-    app.listArticle(diaryTitle) match {
+    app.listArticle(app.currentUser, diaryTitle) match {
       case Right(articles) =>
         articles.zipWithIndex.foreach { case(article, i) =>
           println(s"-------$i-------")

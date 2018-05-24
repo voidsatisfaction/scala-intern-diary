@@ -1,0 +1,12 @@
+@(diaryTitle: String, articles: List[interndiary.model.Article])(
+  implicit userLoggedIn: Boolean,
+  currentUserName: String
+)
+@wrapper("articles page") {
+  <h2>@diaryTitle</h2>
+  @for(article <- articles){
+    <h3>@article.title</h3>
+    <p>created: @article.created updated: @article.updated</p>
+    <p>@article.body</p>
+  }
+}

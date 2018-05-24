@@ -87,6 +87,38 @@ class DiaryWeb extends DiaryWebStack with AppContextSupport {
     checkLoginOrRedirect
     implicit val userLoggedIn: Boolean = isLoggedIn
     implicit val currentUserName: String = getCurrentUserNameWithGuest
+
+    interndiary.html.newDiary()
+  }
+
+  post("/diaries") {
+    checkLoginOrRedirect
+    val userName: String = getCurrentUserNameWithGuest
+    val diaryTitle: String = params("diary_title")
+
+    val app = createApp()
+
+    app.addDiary(diaryTitle) match {
+      case Right(_) => Found(s"/users/${userName}/diaries")
+      case Left(errorResult) => errorResult
+    }
+  }
+
+  get("/users/:userName/diaries/:diaryTitle") {
+    implicit val userLoggedIn: Boolean = isLoggedIn
+    implicit val currentUserName: String = getCurrentUserNameWithGuest
+    val userName: String = params("userName")
+    val diaryTitle: String = params("diaryTitle")
+
+    val app = createApp()
+
+    (for {
+      user <- app.findUser(userName).right
+      articles <- app.listArticle(user, diaryTitle).right
+    } yield articles) match {
+      case Right(articles) => interndiary.html.articles(diaryTitle, articles)
+      case Left(errorResult) => errorResult
+    }
   }
 
   // TODO: diary articles
