@@ -20,13 +20,13 @@ class DiaryWeb extends DiaryWebStack with AppContextSupport {
   def isLoggedIn(): Boolean = {
     getCurrentUserName match {
       case Some(name) => true
-      case _ => false
+      case None => false
     }
   }
 
   def checkLoginOrRedirect(): Unit = {
     if(!isLoggedIn()) {
-      Found("/login")
+      redirect("/login")
     }
   }
 
