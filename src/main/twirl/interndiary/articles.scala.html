@@ -1,4 +1,8 @@
-@(diaryTitle: String, articles: List[interndiary.model.Article])(
+@(
+  diaryTitle: String,
+  articles: List[interndiary.model.Article],
+  page: Int
+)(
   implicit userLoggedIn: Boolean,
   currentUserName: String
 )
@@ -19,5 +23,12 @@
     </p>
     <hr>
   }
+  </div>
+  <div>
+    @if(page == 1) {
+      <p>@page - <a href="/users/@currentUserName/diaries/@diaryTitle/articles?page=@(page+1)">next</a></p>
+    } else {
+      <p><a href="/users/@currentUserName/diaries/@diaryTitle/articles?page=@(page-1)">before</a> - @page - <a href="/users/@currentUserName/diaries/@diaryTitle/articles?page=@(page+1)">next</a></p>
+    }
   </div>
 }

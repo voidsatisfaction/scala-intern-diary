@@ -37,7 +37,7 @@ class DiaryWeb extends DiaryWebStack with AppContextSupport {
     // QUSTION: 同じロジックが重複している(userLoggedIn, currentUserName등등)どうしたら、より綺麗にまとめられるのか？
     implicit val userLoggedIn: Boolean = isLoggedIn
     implicit val currentUserName: String = getCurrentUserNameWithGuest
-    println(request.cookies)
+
     interndiary.html.index("Write your best diary, please!")
   }
 
@@ -63,9 +63,6 @@ class DiaryWeb extends DiaryWebStack with AppContextSupport {
     response.setHeader(
       "Set-Cookie", s"""userName=; Path=/; Expires=Thu, 01 Jan 2000 00:00:00 GMT"""
     )
-    // response.setHeader(
-    //   "Set-Cookie", s"""userName=deleted; Path=/; Domain=localhost"""
-    // )
     redirect("/")
   }
 
@@ -111,13 +108,19 @@ class DiaryWeb extends DiaryWebStack with AppContextSupport {
     val userName: String = params("userName")
     val diaryTitle: String = params("diaryTitle")
 
+    // QUESTION: query parameterとして、abcみたいな文字列がくる場合の処理はどうすれば綺麗にできるのか？
+    val page: Int = params.getOrElse("page", "1").toInt
+    val limit: Int = 5
+    val offset: Int = (page - 1) * limit
+    // QUESTION: ページネーションで最後まで一瞬で移動できるようにするためには
+    // 全体レコード数を知る必要があると思われるが、それは毎回軽さんっして表示する感じなのか？
     val app = createApp()
 
     (for {
       user <- app.findUser(userName).right
-      articles <- app.listArticle(user, diaryTitle).right
+      articles <- app.listArticle(user, diaryTitle, limit, offset).right
     } yield articles) match {
-      case Right(articles) => interndiary.html.articles(diaryTitle, articles)
+      case Right(articles) => interndiary.html.articles(diaryTitle, articles, page)
       case Left(errorResult) => errorResult
     }
   }

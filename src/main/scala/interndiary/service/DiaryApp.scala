@@ -60,10 +60,10 @@ class DiaryApp(currentUserName: String) {
     }
   }
 
-  def listArticle(user: User, diaryTitle: String)(implicit ctx: Context): Either[Error, List[Article]] = {
+  def listArticle(user: User, diaryTitle: String, limit: Int, offset: Int)(implicit ctx: Context): Either[Error, List[Article]] = {
     repository.Diaries.findByUserAndTitle(user, diaryTitle) match {
       case Some(diary) =>
-        Right(repository.Articles.listAll(diary).toList)
+        Right(repository.Articles.listAll(diary, limit, offset).toList)
       case None => Left(DiaryNotFound)
     }
   }

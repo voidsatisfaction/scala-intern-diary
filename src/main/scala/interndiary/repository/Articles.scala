@@ -49,12 +49,14 @@ object Articles {
     """.as[Article].map(_.headOption))
   }
 
-  def listAll(diary: Diary)(implicit ctx: Context): Seq[Article] = {
+  def listAll(diary: Diary, limit: Int, offset: Int)(implicit ctx: Context): Seq[Article] = {
     val diaryId: Long = diary.diaryId
     val rows = run(sql"""
       SELECT * FROM article
         WHERE
           diary_id=$diaryId
+        LIMIT $limit
+        OFFSET $offset
     """.as[Article])
     rows
   }
