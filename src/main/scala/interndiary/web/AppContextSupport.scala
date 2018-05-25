@@ -1,5 +1,5 @@
 // QUESTION: これはどうやって動いているのだ？
-// どうやってContextを注入しているのか？
+// mixinとして入ることになる。
 package interndiary.web
 
 import org.scalatra._
