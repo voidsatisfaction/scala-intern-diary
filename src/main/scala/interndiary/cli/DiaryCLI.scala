@@ -19,15 +19,15 @@ object DiaryCLI {
       Context.setup("db.default")
       implicit val ctx = Context.createContext()
       args.toList match {
-        case userName :: "addDiary" :: diaryTitle :: _ =>
+        case userName :: "createDiary" :: diaryTitle :: _ =>
           val app = createApp(userName)
-          addDiary(app, diaryTitle)
+          createDiary(app, diaryTitle)
         case userName:: "listDiary" :: _ =>
           val app = createApp(userName)
           listDiary(app)
-        case userName :: "addArticle" :: diaryTitle :: articleTitle :: articleBody :: _ =>
+        case userName :: "createArticle" :: diaryTitle :: articleTitle :: articleBody :: _ =>
           val app = createApp(userName)
-          addArticle(app, diaryTitle, articleTitle, articleBody)
+          createArticle(app, diaryTitle, articleTitle, articleBody)
         case userName :: "listArticle" :: diaryTitle :: _ =>
           val app = createApp(userName)
           listArticle(app, diaryTitle)
@@ -40,8 +40,8 @@ object DiaryCLI {
     } finally Context.destroy
   }
 
-  def addDiary(app: DiaryApp, title: String)(implicit ctx: Context): Int = {
-    app.addDiary(title) match {
+  def createDiary(app: DiaryApp, title: String)(implicit ctx: Context): Int = {
+    app.createDiary(title) match {
       case Right(diary) =>
         println(s"diary ${diary.title} is added")
         0
@@ -59,13 +59,13 @@ object DiaryCLI {
     0
   }
 
-  def addArticle(
+  def createArticle(
     app: DiaryApp,
     diaryTitle: String,
     articleTitle: String,
     articleBody: String
   )(implicit ctx: Context): Int = {
-    app.addArticle(diaryTitle, articleTitle, articleBody) match {
+    app.createArticle(diaryTitle, articleTitle, articleBody) match {
       case Right(article) =>
         printArticle(article, "verbose")
         0
@@ -111,9 +111,9 @@ object DiaryCLI {
     process.stderr.println(
       """
         | usage:
-        |   run {username} addDiary {title}
+        |   run {username} createDiary {title}
         |   run {username} listDiary
-        |   run {username} addArticle {diaryTitle} {title} {body}
+        |   run {username} createArticle {diaryTitle} {title} {body}
         |   run {username} listArticle {diaryTitle}
         |   run {username} deleteArticle {diaryTitle} {articleTitle}
       """.stripMargin)

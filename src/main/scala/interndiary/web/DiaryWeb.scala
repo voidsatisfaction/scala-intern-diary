@@ -51,7 +51,7 @@ class DiaryWeb extends DiaryWebStack with AppContextSupport {
     val userName: String = params("user_name")
     val app = createApp()
 
-    app.findOrAddUser(userName)
+    app.findOrCreateUser(userName)
 
     response.setHeader(
       "Set-Cookie", s"""userName=${userName}; Path=/; Expires=Thu, 01 Jan 2019 00:00:00 GMT"""
@@ -96,7 +96,7 @@ class DiaryWeb extends DiaryWebStack with AppContextSupport {
 
     val app = createApp()
 
-    app.addDiary(diaryTitle) match {
+    app.createDiary(diaryTitle) match {
       case Right(_) => Found(s"/users/${userName}/diaries")
       case Left(errorResult) => errorResult
     }
@@ -147,7 +147,7 @@ class DiaryWeb extends DiaryWebStack with AppContextSupport {
     val app = createApp()
     val userName = getCurrentUserNameWithGuest
 
-    app.addArticle(diaryTitle, title, body) match {
+    app.createArticle(diaryTitle, title, body) match {
       case Right(_) => Found(s"/users/${userName}/diaries/${diaryTitle}/articles")
       case Left(errorResult) => errorResult
     }
