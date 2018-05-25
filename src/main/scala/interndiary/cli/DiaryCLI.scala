@@ -97,7 +97,7 @@ object DiaryCLI {
     diaryTitle: String,
     articleTitle: String
   )(implicit ctx: Context): Int = {
-    app.deleteArticleByDiaryTitleAndTitle(diaryTitle, articleTitle) match {
+    app.deleteArticle(diaryTitle, articleTitle) match {
       case Right(_) =>
         println(s"article $articleTitle has been deleted")
         0

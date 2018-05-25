@@ -164,13 +164,13 @@ class DiaryWeb extends DiaryWebStack with AppContextSupport {
     // QUESTION: このコードをより綺麗にまとめられる方法はあるのか？
     (for {
       article <- app.findArticle(articleId).right
-      user <- app.findUserByArticle(article).right
+      user <- app.findUser(article).right
     } yield (user, article)) match {
       case Right(result) => {
         val user = result._1
         val article = result._2
         if(user.name == userName) {
-          app.deleteArticleById(article.articleId) match {
+          app.deleteArticle(article.articleId) match {
             case Right(_) => Ok()
             case Left(errorResult) => errorResult
           }

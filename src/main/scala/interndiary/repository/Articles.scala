@@ -30,7 +30,7 @@ object Articles {
     return article
   }
 
-  def findById(articleId: Long)(implicit ctx: Context): Option[Article] = {
+  def find(articleId: Long)(implicit ctx: Context): Option[Article] = {
     run(sql"""
       SELECT * FROM article
         WHERE

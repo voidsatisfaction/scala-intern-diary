@@ -24,7 +24,7 @@ object Users {
     user
   }
 
-  def findById(id: Long)(implicit ctx: Context): Option[User] = {
+  def find(id: Long)(implicit ctx: Context): Option[User] = {
     run(sql"""
       SELECT * FROM user
         WHERE user_id = $id

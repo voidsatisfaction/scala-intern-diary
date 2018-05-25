@@ -26,7 +26,7 @@ object Diaries {
     diary
   }
 
-  def findById(id: Long)(implicit ctx: Context): Option[Diary] = {
+  def find(id: Long)(implicit ctx: Context): Option[Diary] = {
     run(sql"""
       SELECT * FROM diary
       WHERE
