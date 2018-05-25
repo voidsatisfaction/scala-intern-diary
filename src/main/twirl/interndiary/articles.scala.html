@@ -25,10 +25,12 @@
   }
   </div>
   <div>
-    @if(page == 1) {
-      <p>@page - <a href="/users/@currentUserName/diaries/@diaryTitle/articles?page=@(page+1)">next</a></p>
-    } else {
-      <p><a href="/users/@currentUserName/diaries/@diaryTitle/articles?page=@(page-1)">before</a> - @page - <a href="/users/@currentUserName/diaries/@diaryTitle/articles?page=@(page+1)">next</a></p>
+    @if(articles.length > 0) {
+      @if(page == 1) {
+        <p>@page - <a href="/users/@currentUserName/diaries/@diaryTitle/articles?page=@(page+1)">next</a></p>
+      } else {
+        <p><a href="/users/@currentUserName/diaries/@diaryTitle/articles?page=@(page-1)">before</a> - @page - <a href="/users/@currentUserName/diaries/@diaryTitle/articles?page=@(page+1)">next</a></p>
+      }  
     }
   </div>
 }
