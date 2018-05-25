@@ -6,18 +6,23 @@
       this.logoutButton = this.container.querySelector(".logout");
       this.articleContainer = this.container.querySelector(".article-container");
 
-      this.logoutButton.addEventListener('click', (e) => {
-        const logoutEvent = new CustomEvent('logout', {});
-        document.dispatchEvent(logoutEvent);
-      });
-
-      this.articleContainer.addEventListener('click', (e) => {
-        const articleId = +e.toElement.dataset.articleId;
-        const deleteArticleEvent = new CustomEvent('deleteArticle', {
-          detail: { articleId }
+      if(this.logoutButton) {
+        this.logoutButton.addEventListener('click', (e) => {
+          const logoutEvent = new CustomEvent('logout', {});
+          console.log(logoutEvent);
+          document.dispatchEvent(logoutEvent);
         });
-        document.dispatchEvent(deleteArticleEvent);
-      });
+      }
+
+      if(this.articleContainer) {
+        this.articleContainer.addEventListener('click', (e) => {
+          const articleId = e.toElement.dataset.articleId;
+          const deleteArticleEvent = new CustomEvent('deleteArticle', {
+            detail: { articleId }
+          });
+          document.dispatchEvent(deleteArticleEvent);
+        });
+      }
     }
   }
 
@@ -46,8 +51,11 @@
 
     logout() {
       return fetch('/logout', {
+        credentials: 'same-origin',
         method: 'POST'
-      });
+      })
+      .then(() => location.reload())
+      .catch((error) => alert(error));
     }
 
     deleteArticle({ articleId }) {
@@ -55,7 +63,7 @@
         credentials: 'same-origin',
         method: 'DELETE'
       })
-      .then(() => location.reload('/'))
+      .then(() => location.reload())
       .catch((error) => alert(error));
     }
   }
