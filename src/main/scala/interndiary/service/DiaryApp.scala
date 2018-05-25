@@ -19,6 +19,15 @@ class DiaryApp(currentUserName: String) {
     }
   }
 
+  def findUserByArticle(article: Article)(implicit ctx: Context): Either[Error, User] = {
+    val diaryId: Long = article.diaryId
+
+    for {
+      diary <- repository.Diaries.findById(diaryId).toRight(DiaryNotFound).right
+      user <- repository.Users.findById(diary.userId).toRight(UserNotFound).right
+    } yield user
+  }
+
   def addDiary(title: String)(implicit ctx: Context): Either[DiaryError, Diary] = {
     val user = currentUser
     repository.Diaries.findByUserAndTitle(user, title) match {
@@ -29,6 +38,13 @@ class DiaryApp(currentUserName: String) {
 
   def listDiary(user: User)(implicit ctx: Context): List[Diary] = {
     repository.Diaries.listAll(user).toList
+  }
+
+  def findArticle(articleId: Long)(implicit ctx: Context): Either[ArticleError, Article] = {
+    repository.Articles.findById(articleId) match {
+      case Some(article) => Right(article)
+      case None => Left(ArticleNotFound)
+    }
   }
 
   def addArticle(diaryTitle: String, title: String, body: String)(implicit ctx: Context): Either[Error, Article] = {
@@ -52,12 +68,21 @@ class DiaryApp(currentUserName: String) {
     }
   }
 
-  def deleteArticle(diaryTitle: String, title: String)(implicit ctx: Context): Either[Error, Unit] = {
+  def deleteArticleByDiaryTitleAndTitle(diaryTitle: String, title: String)(implicit ctx: Context): Either[Error, Unit] = {
     val user = currentUser
 
     for {
       diary <- repository.Diaries.findByUserAndTitle(user, diaryTitle).toRight(DiaryNotFound).right
       article <- repository.Articles.findByDiaryAndTitle(diary, title).toRight(ArticleNotFound).right
     } yield repository.Articles.delete(article)
+  }
+
+  def deleteArticleById(articleId: Long)(implicit ctx: Context): Either[Error, Unit] = {
+    val user = currentUser
+
+    repository.Articles.findById(articleId) match {
+      case Some(article) => Right(repository.Articles.delete(article))
+      case None => Left(ArticleNotFound)
+    }
   }
 }

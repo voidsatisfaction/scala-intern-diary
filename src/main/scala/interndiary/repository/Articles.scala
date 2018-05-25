@@ -30,6 +30,15 @@ object Articles {
     return article
   }
 
+  def findById(articleId: Long)(implicit ctx: Context): Option[Article] = {
+    run(sql"""
+      SELECT * FROM article
+        WHERE
+          article_id = $articleId
+        LIMIT 1
+    """.as[Article].map(_.headOption))
+  }
+
   def findByDiaryAndTitle(diary: Diary, title: String)(implicit ctx: Context): Option[Article] = {
     val diaryId: Long = diary.diaryId
     run(sql"""

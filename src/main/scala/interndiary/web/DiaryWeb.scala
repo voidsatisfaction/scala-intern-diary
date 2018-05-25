@@ -6,7 +6,6 @@ import org.scalatra._
 class DiaryWeb extends DiaryWebStack with AppContextSupport {
   final val guestUserName: String = "interndiary_guest"
   def createApp(): DiaryApp = {
-    // not looks so good?
     new DiaryApp(getCurrentUserNameWithGuest)
   }
 
@@ -27,13 +26,15 @@ class DiaryWeb extends DiaryWebStack with AppContextSupport {
 
   def checkLoginOrRedirect(): Unit = {
     if(!isLoggedIn()) {
-      redirect("/login")
+      Found("/login")
     }
   }
 
-  // QUESTION: DiaryWebというclassの中で, getは関数？正体はなんだ？
+  // QUESTION: DiaryWebというclassの中で, getは関数？
+  // 正体はなんだ？
+  // どうやってroutingの役割を果たしているのだ？
   get("/") {
-    // QUSTION: 同じロジックが重複している(userLoggedIn)どうしたら、より綺麗にまとめられるのか？
+    // QUSTION: 同じロジックが重複している(userLoggedIn, currentUserName등등)どうしたら、より綺麗にまとめられるのか？
     implicit val userLoggedIn: Boolean = isLoggedIn
     implicit val currentUserName: String = getCurrentUserNameWithGuest
     println(request.cookies)
@@ -53,14 +54,14 @@ class DiaryWeb extends DiaryWebStack with AppContextSupport {
     app.findOrAddUser(userName)
 
     response.setHeader(
-      "Set-Cookie", s"""userName=${userName}; Path=/; Domain=localhost; Expires=Thu, 01 Jan 2019 00:00:00 GMT"""
+      "Set-Cookie", s"""userName=${userName}; Path=/; Expires=Thu, 01 Jan 2019 00:00:00 GMT"""
     )
     redirect("/")
   }
 
   post("/logout") {
     response.setHeader(
-      "Set-Cookie", s"""userName=; Path=/; Domain=localhost; Expires=Thu, 01 Jan 2000 00:00:00 GMT"""
+      "Set-Cookie", s"""userName=; Path=/; Expires=Thu, 01 Jan 2000 00:00:00 GMT"""
     )
     // response.setHeader(
     //   "Set-Cookie", s"""userName=deleted; Path=/; Domain=localhost"""
@@ -104,7 +105,7 @@ class DiaryWeb extends DiaryWebStack with AppContextSupport {
     }
   }
 
-  get("/users/:userName/diaries/:diaryTitle") {
+  get("/users/:userName/diaries/:diaryTitle/articles") {
     implicit val userLoggedIn: Boolean = isLoggedIn
     implicit val currentUserName: String = getCurrentUserNameWithGuest
     val userName: String = params("userName")
@@ -121,11 +122,60 @@ class DiaryWeb extends DiaryWebStack with AppContextSupport {
     }
   }
 
-  // TODO: diary articles
-  // get("/users/:userName/diaries/:diaryName") {
-  //   implicit val userLoggedIn: Boolean = isLoggedIn
-  //   val userName: String = params("userName")
-  //   val diaryName: String = params("diaryName")
-  //   val app = createApp()
-  // }
+  get("/articles/new") {
+    checkLoginOrRedirect
+    implicit val userLoggedIn: Boolean = isLoggedIn
+    implicit val currentUserName: String = getCurrentUserNameWithGuest
+
+    val app = createApp()
+
+    app.findUser(getCurrentUserNameWithGuest) match {
+      case Right(user) => interndiary.html.newArticle(app.listDiary(user))
+      case Left(errorResult) => errorResult
+    }
+  }
+
+  post("/articles") {
+    checkLoginOrRedirect
+    val diaryTitle: String = params("diary_title")
+    val title: String = params("title")
+    val body: String = params("body")
+
+    val app = createApp()
+    val userName = getCurrentUserNameWithGuest
+
+    app.addArticle(diaryTitle, title, body) match {
+      case Right(_) => Found(s"/users/${userName}/diaries/${diaryTitle}/articles")
+      case Left(errorResult) => errorResult
+    }
+  }
+
+  delete("/articles/:articleId") {
+    checkLoginOrRedirect
+    // QUESTION: もし、articleIdにabcみたいな文字列を入れると？
+    val articleId: Long = params("articleId").toLong
+
+    val app = createApp()
+    val userName = getCurrentUserNameWithGuest
+
+    // QUESTION: このコードをより綺麗にまとめられる方法はあるのか？
+    (for {
+      article <- app.findArticle(articleId).right
+      user <- app.findUserByArticle(article).right
+    } yield (user, article)) match {
+      case Right(result) => {
+        val user = result._1
+        val article = result._2
+        if(user.name == userName) {
+          app.deleteArticleById(article.articleId) match {
+            case Right(_) => Ok()
+            case Left(errorResult) => errorResult
+          }
+        } else {
+          NotFound()
+        }
+      }
+      case Left(errorResult) => errorResult
+    }
+  }
 }

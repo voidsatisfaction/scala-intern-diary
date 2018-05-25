@@ -4,9 +4,20 @@
 )
 @wrapper("articles page") {
   <h2>@diaryTitle</h2>
+  <p><a href="/articles/new">add article</a></p>
+  <div class="article-container">
   @for(article <- articles){
     <h3>@article.title</h3>
     <p>created: @article.created updated: @article.updated</p>
     <p>@article.body</p>
+    <p>
+      <!-- QUESTION:
+        このように、data-article-id　記事のidなどを直接htmlに置いておくことはよくないことでしょうか？
+        もし、そうでしたら、実際の現場ではこのような場面ではどうしているのかが知りたいと思いました。
+      -->
+      <button data-article-id="@article.articleId" class="js-btn-delete-article">delete</button>
+    </p>
+    <hr>
   }
+  </div>
 }

@@ -4,10 +4,19 @@
       this.container = element;
 
       this.logoutButton = this.container.querySelector(".logout");
+      this.articleContainer = this.container.querySelector(".article-container");
 
       this.logoutButton.addEventListener('click', (e) => {
         const logoutEvent = new CustomEvent('logout', {});
         document.dispatchEvent(logoutEvent);
+      });
+
+      this.articleContainer.addEventListener('click', (e) => {
+        const articleId = +e.toElement.dataset.articleId;
+        const deleteArticleEvent = new CustomEvent('deleteArticle', {
+          detail: { articleId }
+        });
+        document.dispatchEvent(deleteArticleEvent);
       });
     }
   }
@@ -19,8 +28,16 @@
       document.addEventListener('logout', async (e) => {
         try {
           const res = await this.logout();
+        } catch(error) {
+          console.error(error);
+        }
+      });
+
+      document.addEventListener('deleteArticle', async (e) => {
+        try {
+          const articleId = e.detail.articleId;
+          const res = await this.deleteArticle({ articleId });
           console.log(res);
-          console.log(document.cookie);
         } catch(error) {
           console.error(error);
         }
@@ -31,6 +48,15 @@
       return fetch('/logout', {
         method: 'POST'
       });
+    }
+
+    deleteArticle({ articleId }) {
+      return fetch(`/articles/${articleId}`, {
+        credentials: 'same-origin',
+        method: 'DELETE'
+      })
+      .then(() => location.reload('/'))
+      .catch((error) => alert(error));
     }
   }
 
