@@ -15,10 +15,6 @@
     <p>created: @article.created updated: @article.updated</p>
     <p>@article.body</p>
     <p>
-      <!-- QUESTION:
-        このように、data-article-id　記事のidなどを直接htmlに置いておくことはよくないことでしょうか？
-        もし、そうでしたら、実際の現場ではこのような場面ではどうしているのかが知りたいと思いました。
-      -->
       <button data-article-id="@article.articleId" class="js-btn-delete-article">delete</button>
     </p>
     <hr>
@@ -30,7 +26,7 @@
         <p>@page - <a href="/users/@currentUserName/diaries/@diaryTitle/articles?page=@(page+1)">next</a></p>
       } else {
         <p><a href="/users/@currentUserName/diaries/@diaryTitle/articles?page=@(page-1)">before</a> - @page - <a href="/users/@currentUserName/diaries/@diaryTitle/articles?page=@(page+1)">next</a></p>
-      }  
+      }
     }
   </div>
 }

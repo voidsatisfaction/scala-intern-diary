@@ -108,8 +108,7 @@ class DiaryWeb extends DiaryWebStack with AppContextSupport {
     val userName: String = params("userName")
     val diaryTitle: String = params("diaryTitle")
 
-    // QUESTION: query parameterとして、abcみたいな文字列がくる場合の処理はどうすれば綺麗にできるのか？
-    val page: Int = params.getOrElse("page", "1").toInt
+    val page: Int = params.getAsOrElse[Int]("page", 1)
     val limit: Int = 5
     val offset: Int = (page - 1) * limit
     // QUESTION: ページネーションで最後まで一瞬で移動できるようにするためには
@@ -155,8 +154,7 @@ class DiaryWeb extends DiaryWebStack with AppContextSupport {
 
   delete("/articles/:articleId") {
     checkLoginOrRedirect
-    // QUESTION: もし、articleIdにabcみたいな文字列を入れると？
-    val articleId: Long = params("articleId").toLong
+    val articleId: Long = params.getAs[Long]("articleId").getOrElse(redirect("/"))
 
     val app = createApp()
     val userName = getCurrentUserNameWithGuest
