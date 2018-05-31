@@ -72,11 +72,11 @@ class DiaryWeb extends DiaryWebStack with AppContextSupport {
     val userName: String = params("userName")
     val app = createApp()
 
-    (for {
-      user <- app.findUser(userName).right
-      diaries <- Right(app.listDiary(user)).right
-    } yield (user, diaries)) match {
-      case Right(result) => interndiary.html.myDiary(result._1, result._2)
+    app.findUser(userName).toRight(BadRequest()) match {
+      case Right(user) => {
+        val diaries = app.listDiary(user)
+        interndiary.html.myDiary(user, diaries)
+      }
       case Left(errorResult) => errorResult
     }
   }
@@ -111,15 +111,13 @@ class DiaryWeb extends DiaryWebStack with AppContextSupport {
     val page: Int = params.getAsOrElse[Int]("page", 1)
     val limit: Int = 5
     val offset: Int = (page - 1) * limit
-    // QUESTION: ページネーションで最後まで一瞬で移動できるようにするためには
-    // 全体レコード数を知る必要があると思われるが、それは毎回軽さんっして表示する感じなのか？
     val app = createApp()
 
-    (for {
-      user <- app.findUser(userName).right
-      articles <- app.listArticle(user, diaryTitle, limit, offset).right
-    } yield articles) match {
-      case Right(articles) => interndiary.html.articles(diaryTitle, articles, page)
+    app.findUser(userName).toRight(BadRequest()) match {
+      case Right(user) => {
+        val articles = app.listArticle(user, diaryTitle, limit, offset)
+        interndiary.html.articles(diaryTitle, articles, page)
+      }
       case Left(errorResult) => errorResult
     }
   }
@@ -132,8 +130,8 @@ class DiaryWeb extends DiaryWebStack with AppContextSupport {
     val app = createApp()
 
     app.findUser(getCurrentUserNameWithGuest) match {
-      case Right(user) => interndiary.html.newArticle(app.listDiary(user))
-      case Left(errorResult) => errorResult
+      case Some(user) => interndiary.html.newArticle(app.listDiary(user))
+      case None => checkLoginOrRedirect
     }
   }
 
@@ -157,26 +155,6 @@ class DiaryWeb extends DiaryWebStack with AppContextSupport {
     val articleId: Long = params.getAs[Long]("articleId").getOrElse(redirect("/"))
 
     val app = createApp()
-    val userName = getCurrentUserNameWithGuest
-
-    // QUESTION: このコードをより綺麗にまとめられる方法はあるのか？
-    (for {
-      article <- app.findArticle(articleId).right
-      user <- app.findUser(article).right
-    } yield (user, article)) match {
-      case Right(result) => {
-        val user = result._1
-        val article = result._2
-        if(user.name == userName) {
-          app.deleteArticle(article.articleId) match {
-            case Right(_) => Ok()
-            case Left(errorResult) => errorResult
-          }
-        } else {
-          NotFound()
-        }
-      }
-      case Left(errorResult) => errorResult
-    }
+    app.deleteArticle(articleId)
   }
 }

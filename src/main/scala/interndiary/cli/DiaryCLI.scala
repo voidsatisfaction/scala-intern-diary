@@ -79,17 +79,12 @@ object DiaryCLI {
     app: DiaryApp,
     diaryTitle: String
   )(implicit ctx: Context): Int = {
-    app.listArticle(app.currentUser, diaryTitle, 10, 0) match {
-      case Right(articles) =>
-        articles.zipWithIndex.foreach { case(article, i) =>
-          println(s"-------$i-------")
-          printArticle(article, "verbose")
-        }
-        0
-      case Left(error) =>
-        process.stderr.println(error.toString())
-        1
+    val articles = app.listArticle(app.currentUser, diaryTitle, 10, 0)
+    articles.zipWithIndex.foreach { case(article, i) =>
+      println(s"-------$i-------")
+      printArticle(article, "verbose")
     }
+    0
   }
 
   def deleteArticle(
