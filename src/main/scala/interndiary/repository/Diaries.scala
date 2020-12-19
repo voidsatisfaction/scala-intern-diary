@@ -26,6 +26,15 @@ object Diaries {
     diary
   }
 
+  def find(id: Long)(implicit ctx: Context): Option[Diary] = {
+    run(sql"""
+      SELECT * FROM diary
+      WHERE
+        diary_id = $id
+      LIMIT 1
+    """.as[Diary].map(_.headOption))
+  }
+
   def findByUserAndTitle(user: User, title: String)(implicit ctx: Context): Option[Diary] = {
     val userId: Long = user.userId
     run(sql"""

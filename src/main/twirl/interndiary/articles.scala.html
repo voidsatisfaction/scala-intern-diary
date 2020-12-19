@@ -1,0 +1,32 @@
+@(
+  diaryTitle: String,
+  articles: List[interndiary.model.Article],
+  page: Int
+)(
+  implicit userLoggedIn: Boolean,
+  currentUserName: String
+)
+@wrapper("articles page") {
+  <h2>@diaryTitle</h2>
+  <p><a href="/articles/new">add article</a></p>
+  <div class="article-container">
+  @for(article <- articles){
+    <h3>@article.title</h3>
+    <p>created: @article.created updated: @article.updated</p>
+    <p>@article.body</p>
+    <p>
+      <button data-article-id="@article.articleId" class="js-btn-delete-article">delete</button>
+    </p>
+    <hr>
+  }
+  </div>
+  <div>
+    @if(articles.length > 0) {
+      @if(page == 1) {
+        <p>@page - <a href="/users/@currentUserName/diaries/@diaryTitle/articles?page=@(page+1)">next</a></p>
+      } else {
+        <p><a href="/users/@currentUserName/diaries/@diaryTitle/articles?page=@(page-1)">before</a> - @page - <a href="/users/@currentUserName/diaries/@diaryTitle/articles?page=@(page+1)">next</a></p>
+      }
+    }
+  </div>
+}

@@ -30,6 +30,15 @@ object Articles {
     return article
   }
 
+  def find(articleId: Long)(implicit ctx: Context): Option[Article] = {
+    run(sql"""
+      SELECT * FROM article
+        WHERE
+          article_id = $articleId
+        LIMIT 1
+    """.as[Article].map(_.headOption))
+  }
+
   def findByDiaryAndTitle(diary: Diary, title: String)(implicit ctx: Context): Option[Article] = {
     val diaryId: Long = diary.diaryId
     run(sql"""
@@ -40,12 +49,14 @@ object Articles {
     """.as[Article].map(_.headOption))
   }
 
-  def listAll(diary: Diary)(implicit ctx: Context): Seq[Article] = {
+  def listAll(diary: Diary, limit: Int, offset: Int)(implicit ctx: Context): Seq[Article] = {
     val diaryId: Long = diary.diaryId
     val rows = run(sql"""
       SELECT * FROM article
         WHERE
           diary_id=$diaryId
+        LIMIT $limit
+        OFFSET $offset
     """.as[Article])
     rows
   }

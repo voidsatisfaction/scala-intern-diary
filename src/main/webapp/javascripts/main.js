@@ -4,11 +4,25 @@
       this.container = element;
 
       this.logoutButton = this.container.querySelector(".logout");
+      this.articleContainer = this.container.querySelector(".article-container");
 
-      this.logoutButton.addEventListener('click', (e) => {
-        const logoutEvent = new CustomEvent('logout', {});
-        document.dispatchEvent(logoutEvent);
-      });
+      if(this.logoutButton) {
+        this.logoutButton.addEventListener('click', (e) => {
+          const logoutEvent = new CustomEvent('logout', {});
+          console.log(logoutEvent);
+          document.dispatchEvent(logoutEvent);
+        });
+      }
+
+      if(this.articleContainer) {
+        this.articleContainer.addEventListener('click', (e) => {
+          const articleId = e.toElement.dataset.articleId;
+          const deleteArticleEvent = new CustomEvent('deleteArticle', {
+            detail: { articleId }
+          });
+          document.dispatchEvent(deleteArticleEvent);
+        });
+      }
     }
   }
 
@@ -19,8 +33,16 @@
       document.addEventListener('logout', async (e) => {
         try {
           const res = await this.logout();
+        } catch(error) {
+          console.error(error);
+        }
+      });
+
+      document.addEventListener('deleteArticle', async (e) => {
+        try {
+          const articleId = e.detail.articleId;
+          const res = await this.deleteArticle({ articleId });
           console.log(res);
-          console.log(document.cookie);
         } catch(error) {
           console.error(error);
         }
@@ -29,8 +51,20 @@
 
     logout() {
       return fetch('/logout', {
+        credentials: 'same-origin',
         method: 'POST'
-      });
+      })
+      .then(() => location.reload())
+      .catch((error) => alert(error));
+    }
+
+    deleteArticle({ articleId }) {
+      return fetch(`/articles/${articleId}`, {
+        credentials: 'same-origin',
+        method: 'DELETE'
+      })
+      .then(() => location.reload())
+      .catch((error) => alert(error));
     }
   }
 

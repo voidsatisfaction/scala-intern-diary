@@ -1,0 +1,12 @@
+@(user: interndiary.model.User, diaries: List[interndiary.model.Diary])(
+  implicit userLoggedIn: Boolean,
+  currentUserName: String
+)
+@wrapper("My diary page") {
+  <p>@currentUserName's diaries</p>
+  @for(diary <- diaries){
+    <h3>
+      <a href="/users/@user.name/diaries/@diary.title/articles">@diary.title</a>
+    </h3>
+  }
+}

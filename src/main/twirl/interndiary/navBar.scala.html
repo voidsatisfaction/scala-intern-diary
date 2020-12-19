@@ -1,0 +1,19 @@
+@()(
+  implicit userLoggedIn: Boolean,
+  currentUserName: String
+)
+<nav class="nav">
+  @if(userLoggedIn){
+    <p>
+      <a href="/">Home</a>
+      <a href="/users/@currentUserName/diaries">My diary</a>
+      <a href="/diaries/new">add diary</a>
+      <a class="logout">Logout</a>
+    </p>
+  } else {
+    <p>
+      <a href="/">Home</a>
+      <a href="/login">Login</a>
+    </p>
+  }
+</nav>

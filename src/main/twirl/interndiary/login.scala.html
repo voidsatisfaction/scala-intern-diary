@@ -1,4 +1,7 @@
-@()(implicit userLoggedIn: Boolean)
+@()(
+  implicit userLoggedIn: Boolean,
+  currentUserName: String
+)
 @wrapper("Login page") {
   <p>This is login page</p>
   <form action="/login" method="post">

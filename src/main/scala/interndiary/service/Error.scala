@@ -2,6 +2,15 @@ package interndiary.service
 
 sealed trait Error
 
+sealed trait UserError extends Error {
+  override def toString(): String = this match {
+    case UserNotFound => "Can not find a target user"
+    case UserNotAuthorized => "Not authorized user"
+  }
+}
+final case object UserNotFound extends UserError
+final case object UserNotAuthorized extends UserError
+
 sealed trait DiaryError extends Error {
   override def toString(): String = this match {
     case DiaryNotFound => "Can not find a target diary"

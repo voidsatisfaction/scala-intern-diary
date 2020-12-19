@@ -24,6 +24,14 @@ object Users {
     user
   }
 
+  def find(id: Long)(implicit ctx: Context): Option[User] = {
+    run(sql"""
+      SELECT * FROM user
+        WHERE user_id = $id
+        LIMIT 1
+    """.as[User].map(_.headOption))
+  }
+
   def findByName(name: String)(implicit ctx: Context): Option[User] = {
     run(sql"""
     SELECT * FROM user
